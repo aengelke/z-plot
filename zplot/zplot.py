@@ -683,16 +683,8 @@ class writer:
         return len(self.commands)
 
     # output the commands
-    def dump(self, outfile):
-        if outfile == 'stdout':
-            for line in self.commands:
-                print(line)
-        else:
-            fd = open(outfile, 'w')
-            for line in self.commands:
-                fd.write(line + '\n')
-            fd.close()
-        return
+    def dump(self):
+        return '\n'.join(self.commands)
 
 #
 # --class-- postscript_drawer IGNORE
@@ -1780,9 +1772,21 @@ class canvas:
         self.drawer.make_header()
         return
 
-    def render(self):
+    #
+    # Get rendered canvas as string
+    #
+    def render_str(self):
         self.drawer.make_trailer()
-        self.writer.dump(self.output_file)
+        return self.writer.dump()
+
+    def render(self):
+        str_dump = self.render_str()
+        if self.output_file == 'stdout':
+            print(str_dump)
+        else:
+            fd = open(self.output_file, 'w')
+            fd.write(str_dump + '\n')
+            fd.close()
         return
 
     #
